@@ -1,0 +1,123 @@
+package task2;	
+	import java.util.HashMap;
+	import java.util.Map;
+	import java.util.Scanner;
+
+	class User {
+	    private String userID;
+	    private String userPIN;
+	    private double accountBalance;
+
+	    public User(String userID, String userPIN, double accountBalance) {
+	        this.userID = userID;
+	        this.userPIN = userPIN;
+	        this.accountBalance = accountBalance;
+	    }
+
+	    public String getUserID() {
+	        return userID;
+	    }
+
+	    public String getUserPIN() {
+	        return userPIN;
+	    }
+
+	    public double getAccountBalance() {
+	        return accountBalance;
+	    }
+
+	    public void setAccountBalance(double accountBalance) {
+	        this.accountBalance = accountBalance;
+	    }
+	}
+
+	class ATM {
+	    private Map<String, User> users;
+
+	    public ATM() {
+	        users = new HashMap<>();
+	        // Populate some dummy users (replace with your actual user data)
+	        users.put("12345", new User("12345", "1234", 1000.0));
+	        users.put("67890", new User("67890", "5678", 500.0));
+	    }
+
+	    public boolean authenticateUser(String userID, String userPIN) {
+	        User user = users.get(userID);
+	        return user != null && user.getUserPIN().equals(userPIN);
+	    }
+
+	    public double checkBalance(String userID) {
+	        return users.get(userID).getAccountBalance();
+	    }
+
+	    public void withdraw(String userID, double amount) {
+	        User user = users.get(userID);
+	        user.setAccountBalance(user.getAccountBalance() - amount);
+	    }
+
+	    public void deposit(String userID, double amount) {
+	        User user = users.get(userID);
+	        user.setAccountBalance(user.getAccountBalance() + amount);
+	    }
+	}
+
+	public class Atm_machine  {
+	    public static void main(String[] args) {
+	        ATM atm = new ATM();
+	        Scanner scanner = new Scanner(System.in);
+
+	        System.out.println("Welcome to the ATM Interface");
+
+	        System.out.print("Enter your user ID: ");
+	        String userID = scanner.nextLine();
+
+	        System.out.print("Enter your PIN: ");
+	        String userPIN = scanner.nextLine();
+
+	        if (atm.authenticateUser(userID, userPIN)) {
+	            System.out.println("Authentication successful. You have access to ATM functionalities.");
+
+	            boolean exit = false;
+	            while (!exit) {
+	                System.out.println("1. Check Balance");
+	                System.out.println("2. Withdraw Money");
+	                System.out.println("3. Deposit Money");
+	                System.out.println("4. Exit");
+	                System.out.print("Enter your choice: ");
+	                int choice = scanner.nextInt();
+	                scanner.nextLine(); // Consume newline character
+
+	                switch (choice) {
+	                    case 1:
+	                        System.out.println("Your current balance is: $" + atm.checkBalance(userID));
+	                        break;
+	                    case 2:
+	                        System.out.print("Enter amount to withdraw: $");
+	                        double withdrawAmount = scanner.nextDouble();
+	                        scanner.nextLine(); // Consume newline character
+	                        atm.withdraw(userID, withdrawAmount);
+	                        System.out.println("Withdrawal successful.");
+	                        break;
+	                    case 3:
+	                        System.out.print("Enter amount to deposit: $");
+	                        double depositAmount = scanner.nextDouble();
+	                        scanner.nextLine(); // Consume newline character
+	                        atm.deposit(userID, depositAmount);
+	                        System.out.println("Deposit successful.");
+	                        break;
+	                    case 4:
+	                        exit = true;
+	                        System.out.println("Thank you for using the ATM. Goodbye!");
+	                        break;
+	                    default:
+	                        System.out.println("Invalid choice. Please try again.");
+	                }
+	            }
+	        } else {
+	            System.out.println("Authentication failed. Please try again later.");
+	        }
+
+	        scanner.close();
+	    }
+	}
+
